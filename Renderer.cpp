@@ -7,7 +7,7 @@ void RenderManager::ClearTexture2D(shared_ptr<D3DRenderableTexture> Texture, XMV
 {
 	static auto Context = GetAwaitingContext();
 	
-	Context->ClearRenderTargetView(Texture->GetResource().Get(), Color);
+	Context->ClearRenderTargetView(*Texture->GetResource(), Color);
 
 	FlushCommand(Context);
 
@@ -19,13 +19,14 @@ void RenderManager::ClearDepthStencil(shared_ptr<D3DDepthStencilTexture> DepthSt
 {
 	auto Context = GetAwaitingContext();
 	
-	Context->ClearDepthStencilView(DepthStencil->GetResource().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	Context->ClearDepthStencilView(*DepthStencil->GetResource(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 RenderManager::RenderManager()
 {
 	// 하드웨어를 초기화합니다.
 	Device = D3DHWDevice::GetHWDevice();
+
 }
 
 RenderManager::~RenderManager()
@@ -50,7 +51,7 @@ void RenderManager::AddRenderViewport(float U, float V, UINT Width, UINT Height,
 }
 
 // 스왑체인 인터페이스로부터 버퍼를 받아옵니다.
-HRESULT RenderManager::GetSwapChainBuffer(UINT Index, shared_ptr<D3DRenderableTexture> pOutTexture)
+HRESULT RenderManager::GetSwapChainBuffer(UINT Index, shared_ptr<D3DRenderableTexture>& pOutTexture)
 {
 	HRESULT Result;
 	if (SwapChainTexture != nullptr)
@@ -63,7 +64,7 @@ HRESULT RenderManager::GetSwapChainBuffer(UINT Index, shared_ptr<D3DRenderableTe
 	return S_OK;
 }
 
-HRESULT RenderManager::GetSwapChainDepthBuffer(shared_ptr<D3DDepthStencilTexture> pOutTexture)
+HRESULT RenderManager::GetSwapChainDepthBuffer(shared_ptr<D3DDepthStencilTexture>& pOutTexture)
 {
 
 	if (SwapChainDepth != nullptr)

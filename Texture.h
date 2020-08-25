@@ -66,7 +66,7 @@ namespace D3DRS
 				resource_assert(Texture->SRV.Get());
 
 				Result = Device->CreateUnorderedAccessView(Texture->RawTexture.Get(), &UAVDesc, (ID3D11UnorderedAccessView**)Texture->GetResource().GetAddressOf());
-				resource_assert(Texture->GetResource().Get());
+				resource_assert(*Texture->GetResource());
 			}
 
 			if (BindFlag & D3D11_BIND_RENDER_TARGET)
@@ -83,7 +83,7 @@ namespace D3DRS
 				resource_assert(Texture->SRV.Get());
 
 				Device->CreateRenderTargetView(Texture->RawTexture.Get(), &RTVDesc, (ID3D11RenderTargetView**)Texture->GetResource().GetAddressOf());
-				resource_assert(Texture->GetResource().Get());
+				resource_assert(*Texture->GetResource());
 
 			}
 
@@ -99,9 +99,9 @@ namespace D3DRS
 
 				//Result = Device->CreateShaderResourceView(Texture->RawTexture.Get(), &SRVDesc, Texture->SRV.GetAddressOf());
 				//resource_assert(Texture->SRV.Get());
-
-				Result = Device->CreateDepthStencilView(Texture->RawTexture.Get(), &DSVDesc, (ID3D11DepthStencilView**)Texture->GetResource().GetAddressOf());
-				resource_assert(Texture->GetResource().Get());
+			
+				Result = Device->CreateDepthStencilView(Texture->RawTexture.Get(), &DSVDesc, Texture->GetResource());
+				resource_assert(*Texture->GetResource());
 
 			}
 
@@ -126,7 +126,7 @@ namespace D3DRS
 		HRESULT MakeSwapChainBuffer(DXGI_FORMAT Format, UINT Width, UINT Height, UINT Index);
 
 
-		auto GetResource() { return RTV; }
+		auto GetResource() { return &RTV; }
 	};
 
 	class D3DDepthStencilTexture : public D3DTexture2D
@@ -134,7 +134,7 @@ namespace D3DRS
 	protected:
 		WRL::ComPtr<ID3D11DepthStencilView> DSV = nullptr;
 	public:
-		auto GetResource() { return DSV; };
+		auto GetResource() { return &DSV; };
 
 	};
 
@@ -143,7 +143,7 @@ namespace D3DRS
 	protected:
 		WRL::ComPtr<ID3D11UnorderedAccessView> UAV = nullptr;
 	public:
-		auto GetResource() { return UAV; };
+		auto GetResource() { return &UAV; };
 	};
 
 

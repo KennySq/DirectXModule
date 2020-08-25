@@ -34,11 +34,14 @@ public:
 	void AddRenderViewport(float U, float V, UINT Width, UINT Height, float MaxDepth);
 	_inline D3D11_VIEWPORT& GetViewport(int Index) { return RenderViewports[Index]; }
 
-	HRESULT GetSwapChainBuffer(UINT Index, shared_ptr<D3DRenderableTexture> pOutTexture);
-	HRESULT GetSwapChainDepthBuffer(shared_ptr<D3DDepthStencilTexture> pOutTexture);
+	HRESULT GetSwapChainBuffer(UINT Index, shared_ptr<D3DRenderableTexture>* pOutTexture);
+	HRESULT GetSwapChainDepthBuffer(shared_ptr<D3DDepthStencilTexture>* pOutTexture);
 
 	shared_ptr<D3DRenderableTexture> GetGBuffer(UINT Index) { return GBuffers[Index]; }
 	shared_ptr<D3DDepthStencilTexture> GetSwapChainDepthStencil() { return SwapChainDepth; }
+
+	HRESULT SetSwapChainDepthStencil(shared_ptr<D3DDepthStencilTexture> Texture) { if (Texture == nullptr) return E_INVALIDARG; SwapChainDepth = Texture; }
+	HRESULT SetSwapChainTexture(shared_ptr<D3DRenderableTexture> Texture) { if (Texture == nullptr) return E_INVALIDARG; SwapChainTexture = Texture; }
 
 	void ClearTexture2D(shared_ptr<D3DRenderableTexture> Texture, XMVECTORF32 Color = Colors::Black);
 	void ClearDepthStencil(shared_ptr<D3DDepthStencilTexture> DepthStencil);

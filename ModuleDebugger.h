@@ -7,7 +7,7 @@ _inline void resource_assert(ID3D11Resource* Resource)
 
 _inline void resource_assert(ID3D11View* View)
 {
-	assert(View != nullptr && (std::string("View didn't initialized!") + typeid(View).name()).c_str());
+	assert(View != nullptr && (std::string("View didn't initialized! ") + typeid(View).name()).c_str());
 }
 
 _inline void device_assert(IUnknown* Interface)
