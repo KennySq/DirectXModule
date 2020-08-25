@@ -31,6 +31,7 @@ namespace D3DRS
 		{
 			HRESULT Result;
 			ID3D11Device* Device = D3DHW::GetDevice();
+			shared_ptr<_Ty> TextureWrapper = make_shared<_Ty>(_Ty());
 
 			D3D11_TEXTURE2D_DESC TexDesc{};
 			D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc{};
@@ -41,10 +42,10 @@ namespace D3DRS
 			TexDesc.Format = Format;
 			TexDesc.Width = Width;
 			TexDesc.Height = Height;
-			TexDesc.ArraySize = 1;
 			TexDesc.SampleDesc.Count = 1;
 			TexDesc.SampleDesc.Quality = 0;
 			TexDesc.CPUAccessFlags = 0;
+			TexDesc.ArraySize = 1;
 			TexDesc.BindFlags = BindFlag;
 
 			SRVDesc.Format = Format;
@@ -53,7 +54,8 @@ namespace D3DRS
 
 			if (BindFlag & D3D11_BIND_UNORDERED_ACCESS)
 			{
-				shared_ptr<D3DComputableTexture> Texture = make_shared<D3DComputableTexture>();
+				auto Texture = (D3DComputableTexture*)(&*TextureWrapper);
+
 				UAVDesc.Format = Format;
 				UAVDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
 
@@ -65,13 +67,11 @@ namespace D3DRS
 
 				Result = Device->CreateUnorderedAccessView(Texture->RawTexture.Get(), &UAVDesc, (ID3D11UnorderedAccessView**)Texture->GetResource().GetAddressOf());
 				resource_assert(Texture->GetResource().Get());
-
-				return Texture;
 			}
 
 			if (BindFlag & D3D11_BIND_RENDER_TARGET)
 			{
-				shared_ptr<D3DRenderableTexture> Texture = make_shared<D3DRenderableTexture>();
+				auto Texture = (D3DRenderableTexture*)(&*TextureWrapper);
 
 				RTVDesc.Format = Format;
 				RTVDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
@@ -85,29 +85,27 @@ namespace D3DRS
 				Device->CreateRenderTargetView(Texture->RawTexture.Get(), &RTVDesc, (ID3D11RenderTargetView**)Texture->GetResource().GetAddressOf());
 				resource_assert(Texture->GetResource().Get());
 
-				return Texture;
 			}
 
 			if (BindFlag & D3D11_BIND_DEPTH_STENCIL)
 			{
-				shared_ptr<D3DDepthStencilTexture> Texture = make_shared<D3DDepthStencilTexture>();
-
-				DSVDesc.Format = DXGI_FORMAT_R32_TYPELESS;
+				auto Texture = (D3DDepthStencilTexture*)(&*TextureWrapper);
+				
+				DSVDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 				DSVDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 
 				Result = Device->CreateTexture2D(&TexDesc, nullptr, Texture->RawTexture.GetAddressOf());
 				resource_assert(Texture->RawTexture.Get());
 
-				Result = Device->CreateShaderResourceView(Texture->RawTexture.Get(), &SRVDesc, Texture->SRV.GetAddressOf());
-				resource_assert(Texture->SRV.Get());
+				//Result = Device->CreateShaderResourceView(Texture->RawTexture.Get(), &SRVDesc, Texture->SRV.GetAddressOf());
+				//resource_assert(Texture->SRV.Get());
 
-				Device->CreateDepthStencilView(Texture->RawTexture.Get(), &DSVDesc, (ID3D11DepthStencilView**)Texture->GetResource().GetAddressOf());
+				Result = Device->CreateDepthStencilView(Texture->RawTexture.Get(), &DSVDesc, (ID3D11DepthStencilView**)Texture->GetResource().GetAddressOf());
 				resource_assert(Texture->GetResource().Get());
 
-				return Texture;
 			}
 
-			return nullptr;
+			return TextureWrapper;
 
 		}
 		HRESULT MakeD3D11Texture2D(DXGI_FORMAT Format, UINT Width, UINT Height, D3D11_BIND_FLAG BindFlag);
@@ -128,7 +126,7 @@ namespace D3DRS
 		HRESULT MakeSwapChainBuffer(DXGI_FORMAT Format, UINT Width, UINT Height, UINT Index);
 
 
-		decltype(RTV) GetResource() { return RTV.Get(); }
+		auto GetResource() { return RTV; }
 	};
 
 	class D3DDepthStencilTexture : public D3DTexture2D
@@ -136,7 +134,7 @@ namespace D3DRS
 	protected:
 		WRL::ComPtr<ID3D11DepthStencilView> DSV = nullptr;
 	public:
-		decltype(DSV) GetResource() { return DSV.Get(); };
+		auto GetResource() { return DSV; };
 
 	};
 
@@ -145,7 +143,7 @@ namespace D3DRS
 	protected:
 		WRL::ComPtr<ID3D11UnorderedAccessView> UAV = nullptr;
 	public:
-		decltype(UAV) GetResource() { return UAV.Get(); };
+		auto GetResource() { return UAV; };
 	};
 
 

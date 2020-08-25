@@ -34,8 +34,8 @@ public:
 	void AddRenderViewport(float U, float V, UINT Width, UINT Height, float MaxDepth);
 	_inline D3D11_VIEWPORT& GetViewport(int Index) { return RenderViewports[Index]; }
 
-	shared_ptr<D3DRenderableTexture> GetSwapChainBuffer(UINT Index = 0);
-	shared_ptr<D3DDepthStencilTexture> GetSwapChainDepthBuffer();
+	HRESULT GetSwapChainBuffer(UINT Index, shared_ptr<D3DRenderableTexture> pOutTexture);
+	HRESULT GetSwapChainDepthBuffer(shared_ptr<D3DDepthStencilTexture> pOutTexture);
 
 	shared_ptr<D3DRenderableTexture> GetGBuffer(UINT Index) { return GBuffers[Index]; }
 	shared_ptr<D3DDepthStencilTexture> GetSwapChainDepthStencil() { return SwapChainDepth; }

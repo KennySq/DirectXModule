@@ -50,32 +50,33 @@ void RenderManager::AddRenderViewport(float U, float V, UINT Width, UINT Height,
 }
 
 // 스왑체인 인터페이스로부터 버퍼를 받아옵니다.
-shared_ptr<D3DRenderableTexture> RenderManager::GetSwapChainBuffer(UINT Index)
+HRESULT RenderManager::GetSwapChainBuffer(UINT Index, shared_ptr<D3DRenderableTexture> pOutTexture)
 {
+	HRESULT Result;
 	if (SwapChainTexture != nullptr)
-		return SwapChainTexture;
+		return S_OK;
 
-	shared_ptr<D3DRenderableTexture> Texture = make_shared<D3DRenderableTexture>();
+	pOutTexture = make_shared<D3DRenderableTexture>();
 
-	Texture->MakeSwapChainBuffer(DXGI_FORMAT_R8G8B8A8_UNORM, BIWidth, BIHeight, Index);
+	pOutTexture->MakeSwapChainBuffer(DXGI_FORMAT_R8G8B8A8_UNORM, BIWidth, BIHeight, Index);
 	
-	return Texture;
+	return S_OK;
 }
 
-shared_ptr<D3DDepthStencilTexture> RenderManager::GetSwapChainDepthBuffer()
+HRESULT RenderManager::GetSwapChainDepthBuffer(shared_ptr<D3DDepthStencilTexture> pOutTexture)
 {
 
 	if (SwapChainDepth != nullptr)
-		return SwapChainDepth;
+		return S_OK;
 
-	shared_ptr<D3DDepthStencilTexture> Texture = make_shared<D3DDepthStencilTexture>();
+	pOutTexture = make_shared<D3DDepthStencilTexture>();
 
-	Texture->MakeTexture2D<D3DDepthStencilTexture>(DXGI_FORMAT_R24_UNORM_X8_TYPELESS,
+	pOutTexture->MakeTexture2D<D3DDepthStencilTexture>(DXGI_FORMAT_R24G8_TYPELESS,
 												   BIWidth, BIHeight,
 												   D3D11_BIND_DEPTH_STENCIL);
 
 	
-	return Texture;
+	return S_OK;
 }
 
 // 인자로 전달받는 Deferred-Context에 예약된 명령들을 전부 Flush 하여 명령목록에 기록합니다.
