@@ -17,7 +17,7 @@ void RenderManager::ClearTexture2D(shared_ptr<D3DRenderableTexture> Texture, XMV
 // 단일 깊이-스텐실 자원을 Clear 합니다.
 void RenderManager::ClearDepthStencil(shared_ptr<D3DDepthStencilTexture> DepthStencil)
 {
-	auto Context = GetAwaitingContext();
+	static auto Context = GetAwaitingContext();
 	
 	Context->ClearDepthStencilView(*DepthStencil->GetResource(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
@@ -54,10 +54,10 @@ void RenderManager::AddRenderViewport(float U, float V, UINT Width, UINT Height,
 HRESULT RenderManager::GetSwapChainBuffer(UINT Index, shared_ptr<D3DRenderableTexture>& pOutTexture)
 {
 	HRESULT Result;
-	if (SwapChainTexture != nullptr)
+	/*if (SwapChainTexture != nullptr)
 		return S_OK;
-
-	pOutTexture = make_shared<D3DRenderableTexture>();
+*/
+	pOutTexture = make_shared<D3DRenderableTexture>(D3DRenderableTexture());
 
 	pOutTexture->MakeSwapChainBuffer(DXGI_FORMAT_R8G8B8A8_UNORM, BIWidth, BIHeight, Index);
 	

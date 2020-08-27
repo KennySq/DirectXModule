@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+
+.vs/
+
+x64/
+
+DirectXModule.vcxproj
+
+DirectXModule.vcxproj.filters

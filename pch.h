@@ -51,6 +51,7 @@
 
 #include"FBXLoader.h"
 
+#include"D3DRSBuffer.h"
 #include"Camera.h"
 
 #include"Renderer.h"

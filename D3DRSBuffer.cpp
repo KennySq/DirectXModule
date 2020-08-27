@@ -1,8 +1,8 @@
 #include"pch.h"
-#include "Buffer.h"
+#include "D3DRSBuffer.h"
 
 template<typename _VertTy>
-inline shared_ptr<D3DAMeshBuffer> D3DRS::Buffer::CreateConstantMeshBuffer(shared_ptr<D3DARS::D3DAMesh<D3DVERTEX::StandardVertex>> Mesh)
+inline shared_ptr<D3DAMeshBuffer> D3DRS::D3DRSBuffer::CreateConstantMeshBuffer(shared_ptr<D3DARS::D3DAMesh<D3DVERTEX::StandardVertex>> Mesh)
 {
 	shared_ptr<D3DAMeshBuffer> BufferInst = make_shared<D3DAMeshBuffer>();
 	ID3D11Device* Device = GetDevice();
@@ -30,4 +30,22 @@ inline shared_ptr<D3DAMeshBuffer> D3DRS::Buffer::CreateConstantMeshBuffer(shared
 	resource_assert(BufferInst->IB.Get());
 
 	return BufferInst;
+}
+
+template<typename _Ty>
+shared_ptr<D3DAConstBuffer> D3DRS::D3DRSBuffer::CreateConstantBuffer(_Ty & InitialData)
+{
+	HRESULT Result;
+	ID3D11Device* Device = D3DHW::GetDevice();
+	shared_ptr<D3DAConstBuffer> buffer = make_shared<D3DAConstBuffer>();
+
+	D3D11_BUFFER_DESC desc{};
+	
+	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.ByteWidth = sizeof(_Ty);
+
+	Result = Device->CreateBuffer(&desc, nullptr, buffer->CB.GetAddressOf());
+	resource_assert(buffer->CB.Get());
+	return buffer;
 }

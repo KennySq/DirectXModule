@@ -121,6 +121,11 @@ namespace D3DARS
 
 	};
 
+	struct D3DAConstBuffer
+	{
+		WRL::ComPtr<ID3D11Buffer> CB;
+	};
+
 	struct D3DAMeshBuffer
 	{
 		WRL::ComPtr<ID3D11Buffer> VB; // Vertex Buffer
