@@ -54,5 +54,7 @@
 #include"D3DRSBuffer.h"
 #include"Camera.h"
 
+#include"IRenderer.h"
+#include"Instance.h"
 #include"Renderer.h"
 

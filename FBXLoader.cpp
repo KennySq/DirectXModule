@@ -3,7 +3,7 @@
 
 using namespace std;
 
-shared_ptr<D3DAModel<D3DVERTEX::StandardVertex>> FBXLoader::Load(string Path)
+shared_ptr<D3DAModel> FBXLoader::Load(string Path)
 {
 	FbxManager* Manager = FbxManager::Create();
 	FbxIOSettings* IOSetting = FbxIOSettings::Create(Manager,IOSROOT);
@@ -18,6 +18,8 @@ shared_ptr<D3DAModel<D3DVERTEX::StandardVertex>> FBXLoader::Load(string Path)
 		MessageBoxA(nullptr, "Failed to import .fbx file", 0, 0);
 	}
 
+	Model = make_shared<D3DAModel>();
+
 	D3DVERTEX::StandardVertex Vertex;
 	
 	Scene = FbxScene::Create(Manager, "Scene");
@@ -31,7 +33,6 @@ shared_ptr<D3DAModel<D3DVERTEX::StandardVertex>> FBXLoader::Load(string Path)
 	IOSetting->Destroy();
 	Manager->Destroy();
 
-
 	return Model;
 }
 
@@ -44,9 +45,13 @@ void FBXLoader::LoadNode(FbxNode* Node)
 	XMFLOAT4 Position;
 	XMFLOAT3 Normal;
 	XMFLOAT2 UV;
-	Model = make_shared<D3DAModel<D3DVERTEX::StandardVertex>>();
-
-	Model->Mesh->push_back(D3DAMesh<D3DVERTEX::StandardVertex>());
+	
+	
+	shared_ptr<D3DAMesh<D3DVERTEX::StandardVertex>> TemporalMesh =
+		make_shared<D3DAMesh<D3DVERTEX::StandardVertex>>(
+			D3DAMesh<D3DVERTEX::StandardVertex>()
+			);
+	
 	if (NodeAtt)
 	{
 		if (NodeAtt->GetAttributeType() == FbxNodeAttribute::eMesh)
@@ -69,8 +74,8 @@ void FBXLoader::LoadNode(FbxNode* Node)
 					Vertex.Position = Position;
 					Vertex.Normal = Normal;
 
-					Model->Mesh->at(0).Vertices.push_back(Vertex);
-					Model->Mesh->at(0).Indices.push_back(CPI);
+					TemporalMesh->Vertices.push_back(Vertex);
+					TemporalMesh->Indices.push_back(CPI);
 
 					VertexCount++;
 				}
@@ -78,7 +83,11 @@ void FBXLoader::LoadNode(FbxNode* Node)
 		
 		}
 
-
+		auto Buffer = D3DRSBuffer::CreateConstantMeshBuffer
+			<D3DVERTEX::StandardVertex>(TemporalMesh);
+		
+		Model->Meshes.emplace_back(Buffer);
+		
 		MeshCounter++;
 	}
 

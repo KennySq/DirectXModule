@@ -106,21 +106,7 @@ namespace D3DARS
 		}
 
 	};
-
-
-	template<typename _VertTy>
-	struct D3DAModel
-	{
-		shared_ptr<vector<D3DAMesh<_VertTy>>> Mesh;
-
-		D3DAModel<_VertTy>()
-		{
-			Mesh = make_shared<vector<D3DAMesh<_VertTy>>>();
-		}
-		~D3DAModel<_VertTy>() {	}
-
-	};
-
+	
 	struct D3DAConstBuffer
 	{
 		WRL::ComPtr<ID3D11Buffer> CB;
@@ -132,6 +118,20 @@ namespace D3DARS
 		WRL::ComPtr<ID3D11Buffer> IB; // Index Buffer
 	};
 
+	struct	D3DAModel
+	{
+		vector<shared_ptr<D3DAMeshBuffer>> Meshes;
+
+		D3DAModel()
+		{
+		}
+		~D3DAModel() {}
+
+	private:
+		
+	};
+
+	
 	struct D3DAStructBuffer
 	{
 		WRL::ComPtr<ID3D11Buffer> SB; // Struct Buffer u* register only

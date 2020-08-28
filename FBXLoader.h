@@ -4,13 +4,13 @@ class FBXLoader
 {
 private:
 	FbxScene* Scene;
-	shared_ptr<D3DAModel<D3DVERTEX::StandardVertex>> Model;
+	shared_ptr<D3DAModel> Model;
 
 	XMFLOAT4* Positions = nullptr;
 	XMFLOAT3* Normals = nullptr;
 	XMFLOAT2* UVs = nullptr;
 public:
-	shared_ptr<D3DAModel<D3DVERTEX::StandardVertex>> Load(string Path);
+	shared_ptr<D3DAModel> Load(string Path);
 	
 
 	void LoadNode(FbxNode* Node);

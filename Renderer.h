@@ -46,6 +46,8 @@ public:
 	void ClearTexture2D(shared_ptr<D3DRenderableTexture> Texture, XMVECTORF32 Color = Colors::Black);
 	void ClearDepthStencil(shared_ptr<D3DDepthStencilTexture> DepthStencil);
 
+
+
 	void FlushCommand(ID3D11DeviceContext* Context);
 
 	void Execute();
