@@ -63,12 +63,14 @@ namespace D3DARS
 
 			// 보관에 사용하는 키는 빠른 접근을 위해 문자가 아닌
 			// typeid로 알아낸 자료형의 hash 값을 사용합니다.
-			WRL::ComPtr<ID3D11DeviceChild> DC = Interfaces[typeid(_Ty).hash_code()];
-
+			auto DC = Interfaces[typeid(_Ty).hash_code()];
+			
+			auto Temp = dynamic_cast<ComPtr<_Ty>>(DC);
+			
 			// 만약 _Ty의 hash 값에 해당하는 멤버가 _Ty에 해당하는 인터페이스로
 			// Query가 불가능하다면 함수는 nullptr를 반환합니다.
 			if(FAILED(DC->QueryInterface<_Ty>(Shader.GetAddressOf())))
-			   return nullptr; 
+			   return nullptr;
 
 			return Shader;
 			
@@ -77,6 +79,7 @@ namespace D3DARS
 		
 		D3DAMaterial()
 		{
+
 			// 이 방법은 아직까지는 수작업으로 type에 관한 정보를 전달 받아야 합니다.
 			Interfaces.insert_or_assign(typeid(ID3D11VertexShader).hash_code(), VS);
 			Interfaces.insert_or_assign(typeid(ID3D11PixelShader).hash_code(), PS);
