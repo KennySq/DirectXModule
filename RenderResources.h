@@ -68,7 +68,7 @@ namespace D3DARS
 			// 만약 _Ty의 hash 값에 해당하는 멤버가 _Ty에 해당하는 인터페이스로
 			// Query가 불가능하다면 함수는 nullptr를 반환합니다.
 			if(FAILED(DC->QueryInterface<_Ty>(Shader.GetAddressOf())))
-			   return nullptr;
+			   return nullptr; 
 
 			return Shader;
 			

@@ -53,6 +53,8 @@
 #include"Camera.h"
 #include"D3DRSBuffer.h"
 
+#include"HLSLCompiler.h"
+
 #include"IRenderer.h"
 #include"Instance.h"
 

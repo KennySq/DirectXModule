@@ -60,7 +60,7 @@ void Instance::DrawMesh()
 	Context->VSSetShader(VS.Get(), nullptr, 0);
 	Context->PSSetShader(PS.Get(), nullptr, 0);
 
-	//Context->DrawIndexed()
+	Context->DrawIndexed(IndexCount, 0, 0);
 }
 
 void Instance::AddMaterial(shared_ptr<D3DAMaterial> Material)
