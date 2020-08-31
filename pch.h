@@ -15,29 +15,28 @@
 #include "framework.h"
 
 // STL Headers
-#include<vector>
+#include<functional>
 #include<iostream>
-#include<wrl.h>
+#include<map>
 #include<memory>
 #include<string>
-#include<functional>
-#include<map>
+#include<vector>
+#include<wrl.h>
 
 #include<atlbase.h>
 
 
 // D3D Headers
 #include<d3d11.h>
-#include<dxgi.h>
 #include<d3dcompiler.h>
+#include<dxgi.h>
 
-#include<DirectXMath.h>
-#include<DirectXColors.h>
 #include<dinput.h>
+#include<DirectXColors.h>
+#include<DirectXMath.h>
 
 // FBX SDK Headers
 #include<fbxsdk.h>
-
 
 #include"Built-In-Variables.h"
 #include"ModuleDebugger.h"
@@ -51,10 +50,13 @@
 
 #include"FBXLoader.h"
 
-#include"D3DRSBuffer.h"
 #include"Camera.h"
+#include"D3DRSBuffer.h"
 
 #include"IRenderer.h"
 #include"Instance.h"
+
+#include"Scene.h"
+
 #include"Renderer.h"
 

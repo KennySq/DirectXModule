@@ -18,7 +18,7 @@ shared_ptr<D3DAModel> FBXLoader::Load(string Path)
 		MessageBoxA(nullptr, "Failed to import .fbx file", 0, 0);
 	}
 
-	Model = make_shared<D3DAModel>();
+	Model = make_shared<D3DAModel>(	);
 
 	D3DVERTEX::StandardVertex Vertex;
 	

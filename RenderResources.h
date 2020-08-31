@@ -121,6 +121,7 @@ namespace D3DARS
 	struct	D3DAModel
 	{
 		vector<shared_ptr<D3DAMeshBuffer>> Meshes;
+		unsigned int* Stride;
 
 		D3DAModel()
 		{
