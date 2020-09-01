@@ -56,6 +56,9 @@
 #include"HLSLCompiler.h"
 
 #include"IRenderer.h"
+
+#include"Transform.h"
+
 #include"Instance.h"
 
 #include"Scene.h"

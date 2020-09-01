@@ -22,6 +22,14 @@ void RenderManager::ClearDepthStencil(shared_ptr<D3DDepthStencilTexture> DepthSt
 	Context->ClearDepthStencilView(*DepthStencil->GetResource(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
+void RenderManager::SelectRenderTarget(ID3D11RenderTargetView** RTVs, UINT Count, ID3D11DepthStencilView* DSV)
+{
+	auto Context = GetContext();
+
+	Context->OMSetRenderTargets(Count, RTVs, DSV);
+
+}
+
 RenderManager::RenderManager()
 {
 	// 하드웨어를 초기화합니다.

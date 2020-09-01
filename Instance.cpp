@@ -35,7 +35,9 @@ void Instance::DrawMesh()
 	static UINT Strides[] = { sizeof(D3DVERTEX::StandardVertex) };
 	static UINT Offsets[] = { 0 };
 	static D3D11_BUFFER_DESC IDesc;
-	
+	static auto Camera = InstanceScene->GetCamera(0);
+	static ID3D11Buffer* BasicBuffers[] = {InstTransform->GetBuffer().Get(), Camera->GetBuffer().Get()};
+
 	auto IL = Materials[0]->RequestInterface<ID3D11InputLayout>();
 	auto VS = Materials[0]->RequestInterface<ID3D11VertexShader>();
 	auto GS = Materials[0]->RequestInterface<ID3D11GeometryShader>();
@@ -49,7 +51,7 @@ void Instance::DrawMesh()
 	UINT IndexCount = IDesc.ByteWidth / sizeof(MeshIndex);
 	
 	Context->IASetVertexBuffers(0, Model->Meshes.size(), VertexBuffers.data(), Strides, Offsets);
-	Context->IASetInputLayout(IL.Get());
+	Context->IASetInputLayout(IL);
 	Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 #ifdef _INDEX32
 	Context->IASetIndexBuffer(IndexBuffers[0], DXGI_FORMAT_R32_UINT, 0);
@@ -57,9 +59,10 @@ void Instance::DrawMesh()
 	Context->IASetIndexBuffer(IndexBuffers[0], DXGI_FORMAT_R16_UINT, 0);
 #endif
 
-	Context->VSSetShader(VS.Get(), nullptr, 0);
-	Context->PSSetShader(PS.Get(), nullptr, 0);
-
+	Context->VSSetShader(VS, nullptr, 0);
+	Context->PSSetShader(PS, nullptr, 0);
+	Context->VSSetConstantBuffers(0, 1, Camera->GetBuffer().GetAddressOf());
+	Context->VSSetConstantBuffers(0, 2, BasicBuffers);
 	Context->DrawIndexed(IndexCount, 0, 0);
 }
 
