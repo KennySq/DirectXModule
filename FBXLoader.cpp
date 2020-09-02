@@ -47,10 +47,8 @@ void FBXLoader::LoadNode(FbxNode* Node)
 	XMFLOAT2 UV;
 	
 	
-	shared_ptr<D3DAMesh<D3DVERTEX::StandardVertex>> TemporalMesh =
-		make_shared<D3DAMesh<D3DVERTEX::StandardVertex>>(
-			D3DAMesh<D3DVERTEX::StandardVertex>()
-			);
+	TemporalMesh = make_shared<D3DAMesh<D3DVERTEX::StandardVertex>>(
+			D3DAMesh<D3DVERTEX::StandardVertex>() );
 	
 	if (NodeAtt)
 	{
@@ -62,20 +60,22 @@ void FBXLoader::LoadNode(FbxNode* Node)
 			unsigned int TriCount = Mesh->GetPolygonCount();
 			unsigned int VertexCount = 0;
 
-			for (unsigned int i = 0; i < TriCount; i++)
+			for (unsigned int i = 0; i < TriCount; ++i)
 			{
-				for (unsigned int j = 0; j < 3; j++)
+				int PolyVertCount = Mesh->GetPolygonSize(i);
+				for (unsigned int j = 0; j < 3; ++j)
 				{
 					int CPI = Mesh->GetPolygonVertex(i, j);
-
+						
 					XMFLOAT4& Position = Positions[CPI];
 					XMFLOAT3 Normal = ReadNormal(Mesh, CPI, VertexCount);
 					
 					Vertex.Position = Position;
+					Vertex.Position.w = 1.0f;
 					Vertex.Normal = Normal;
 
 					TemporalMesh->Vertices.push_back(Vertex);
-					TemporalMesh->Indices.push_back(CPI);
+					TemporalMesh->Indices.push_back(VertexCount);
 
 					VertexCount++;
 				}
@@ -105,25 +105,25 @@ void FBXLoader::LoadNode(FbxNode* Node)
 void FBXLoader::GetVertex(FbxMesh* Mesh)
 {
 	unsigned int Count = Mesh->GetControlPointsCount();
-	Positions = new XMFLOAT4[Count];
-	Normals = new XMFLOAT3[Count];
-	UVs = new XMFLOAT2[Count];
 
-	for (int i = 0; i < Count; i++)
+	for (unsigned int i = 0; i < Count; i++)
 	{
 		XMFLOAT4 Position;
 		XMFLOAT3 Normal;
 		XMFLOAT2 UV;
 
+		
+
 		Position.x = static_cast<float>(Mesh->GetControlPointAt(i).mData[0]);
 		Position.y = static_cast<float>(Mesh->GetControlPointAt(i).mData[1]);
 		Position.z = static_cast<float>(Mesh->GetControlPointAt(i).mData[2]);
 
-		Positions[i] = Position;
+		Positions.push_back(Position);
 
 	}
 
 }
+
 
 XMFLOAT3 FBXLoader::ReadNormal(FbxMesh* Mesh, int CPI, int VertexCount)
 {
@@ -154,6 +154,7 @@ XMFLOAT3 FBXLoader::ReadNormal(FbxMesh* Mesh, int CPI, int VertexCount)
 					Normal.x = static_cast<float>(VertexNormal->GetDirectArray().GetAt(Index).mData[0]);
 					Normal.y = static_cast<float>(VertexNormal->GetDirectArray().GetAt(Index).mData[1]);
 					Normal.z = static_cast<float>(VertexNormal->GetDirectArray().GetAt(Index).mData[2]);
+					TemporalMesh->Indices.push_back(Index);
 				} break;
 
 
@@ -179,6 +180,8 @@ XMFLOAT3 FBXLoader::ReadNormal(FbxMesh* Mesh, int CPI, int VertexCount)
 					Normal.x = static_cast<float>(VertexNormal->GetDirectArray().GetAt(Index).mData[0]);
 					Normal.y = static_cast<float>(VertexNormal->GetDirectArray().GetAt(Index).mData[1]);
 					Normal.z = static_cast<float>(VertexNormal->GetDirectArray().GetAt(Index).mData[2]);
+					TemporalMesh->Indices.push_back(Index);
+
 				} break;
 			}
 		}

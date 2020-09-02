@@ -6,6 +6,7 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "dxgi.lib")
+
 #pragma comment(lib, "libfbxsdk-mt.lib")
 #pragma comment(lib, "libxml2-mt.lib")
 #pragma comment(lib, "libfbxsdk.lib")
@@ -18,6 +19,7 @@
 #include<functional>
 #include<iostream>
 #include<map>
+#include<unordered_map>
 #include<memory>
 #include<string>
 #include<vector>
@@ -37,6 +39,11 @@
 
 // FBX SDK Headers
 #include<fbxsdk.h>
+
+// imgui Headers
+#include"imgui\imgui_impl_win32.h"
+#include"imgui\imgui_impl_dx11.h"
+#include"imgui\imgui.h"
 
 #include"Built-In-Variables.h"
 #include"ModuleDebugger.h"

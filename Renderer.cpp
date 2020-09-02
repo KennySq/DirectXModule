@@ -88,6 +88,25 @@ HRESULT RenderManager::GetSwapChainDepthBuffer(shared_ptr<D3DDepthStencilTexture
 	return S_OK;
 }
 
+void RenderManager::CreateRasterizerState(D3D11_CULL_MODE CullMode, D3D11_FILL_MODE FillMode, bool Clockwise)
+{
+	auto Device = D3DHW::GetDevice();
+	
+	D3D11_RASTERIZER_DESC RasterDesc = CD3D11_RASTERIZER_DESC();
+	RasterDesc.CullMode = CullMode;
+	RasterDesc.FillMode = FillMode;
+	RasterDesc.FrontCounterClockwise = Clockwise;
+
+	ComPtr<ID3D11RasterizerState> State;
+
+	auto Result = Device->CreateRasterizerState(&RasterDesc, State.GetAddressOf());
+	if (State.Get() == nullptr)
+		debug_logger("The ID3D11RasterzerState didn't initialized!");
+
+	RasterizerStates.emplace_back(State);
+}
+
+
 // 인자로 전달받는 Deferred-Context에 예약된 명령들을 전부 Flush 하여 명령목록에 기록합니다.
 void RenderManager::FlushCommand(ID3D11DeviceContext* Context)
 {

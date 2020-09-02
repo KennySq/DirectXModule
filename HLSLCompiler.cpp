@@ -258,33 +258,33 @@ HRESULT ReflectShader(ID3DBlob* VBlob, ID3D11InputLayout** pOutInputLayout, ID3D
 
 HRESULT CompilePass(const char* Path, const char* Pass, int Flag, shared_ptr<D3DAMaterial> Material)
 {
-	auto VS = Material->RequestInterface<ID3D11VertexShader>();
-	auto PS = Material->RequestInterface<ID3D11PixelShader>();
-	auto GS = Material->RequestInterface<ID3D11GeometryShader>();
-	auto CS = Material->RequestInterface<ID3D11ComputeShader>();
-	auto HS = Material->RequestInterface<ID3D11HullShader>();
-	auto DS = Material->RequestInterface<ID3D11DomainShader>();
-	auto IL = Material->RequestInterface<ID3D11InputLayout>();
+	auto VS = Material->RequestAddressOfInterface<ID3D11VertexShader>();
+	auto PS = Material->RequestAddressOfInterface<ID3D11PixelShader>();
+	auto GS = Material->RequestAddressOfInterface<ID3D11GeometryShader>();
+	auto CS = Material->RequestAddressOfInterface<ID3D11ComputeShader>();
+	auto HS = Material->RequestAddressOfInterface<ID3D11HullShader>();
+	auto DS = Material->RequestAddressOfInterface<ID3D11DomainShader>();
+	auto IL = Material->RequestAddressOfInterface<ID3D11InputLayout>();
 
 	string PassName = Pass;
 
 	if(Flag & PASSTYPE::VER)
-		CompileVertexShader(Path, (PassName + "VS").c_str(), &VS, &IL);
+		CompileVertexShader(Path, (PassName + "VS").c_str(), VS, IL);
 
 	if(Flag & PASSTYPE::PIX)
-		CompilePixelShader(Path, (PassName + "PS").c_str(), &PS);
+		CompilePixelShader(Path, (PassName + "PS").c_str(), PS);
 	
 	if(Flag & PASSTYPE::GEO)
-		CompileGeometryShader(Path, (PassName + "GS").c_str(), &GS);
+		CompileGeometryShader(Path, (PassName + "GS").c_str(), GS);
 
 	if (Flag & PASSTYPE::COM)
-		CompileComputeShader(Path, (PassName + "CS").c_str(), &CS);
+		CompileComputeShader(Path, (PassName + "CS").c_str(), CS);
 
 	if (Flag & PASSTYPE::HUL)
-		CompileHullShader(Path, (PassName + "HS").c_str(), &HS);
+		CompileHullShader(Path, (PassName + "HS").c_str(), HS);
 
 	if (Flag & PASSTYPE::DOM)
-		CompileDomainShader(Path, (PassName + "DS").c_str(), &DS);
+		CompileDomainShader(Path, (PassName + "DS").c_str(), DS);
 
 	return S_OK;
 }

@@ -19,12 +19,12 @@ D3DACamera::D3DACamera()
 	Device->CreateBuffer(&Desc, nullptr, CameraBuffer.GetAddressOf());
 	resource_assert(CameraBuffer.Get());
 
-	XMVECTOR Eye = XMVectorSet(5.0f, 0.0f, 5.0f, 1.0f);
+	XMVECTOR Eye = XMVectorSet(50.0f, 0.0f, 50.0f, 1.0f);
 	XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 	XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
 
-	ViewMat = XMMatrixTranspose(XMMatrixLookAtLH(Eye, At, Up));
-	ProjectionMat = XMMatrixTranspose(XMMatrixPerspectiveFovLH(FOV, BIAspectRatio, 0.01f, 1000.0f));
+	ViewMat = XMMatrixLookAtLH(Eye, At, Up);
+	ProjectionMat = XMMatrixPerspectiveFovLH(FOV, BIAspectRatio, 0.01f, 1000.0f);
 
 	XMStoreFloat4x4(&ViewProject.View, ViewMat);
 	XMStoreFloat4x4(&ViewProject.Projection, ProjectionMat);

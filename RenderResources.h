@@ -11,6 +11,19 @@ namespace D3DARS
 			DirectX::XMFLOAT4 Position;
 			DirectX::XMFLOAT3 Normal;
 			DirectX::XMFLOAT2 UV;
+
+
+			bool operator<(StandardVertex& Other)
+			{
+				return (XMVector4Length(XMLoadFloat4(&Position)).m128_f32[0] < XMVector4Length(XMLoadFloat4(&Other.Position)).m128_f32[0]);
+			}
+
+			bool operator==(StandardVertex& Other)
+			{
+				return (Position.x == Other.Position.x && Position.y == Other.Position.y && Position.z == Other.Position.z) &&
+					(Normal.x == Other.Normal.x && Normal.y == Other.Normal.y && Normal.z == Other.Normal.z) &&
+					(UV.x == Other.UV.x && UV.y == Other.UV.y);
+			}
 		};
 
 		struct CompactVertex
@@ -64,24 +77,28 @@ namespace D3DARS
 			// 보관에 사용하는 키는 빠른 접근을 위해 문자가 아닌
 			// typeid로 알아낸 자료형의 hash 값을 사용합니다.
 			auto DC = Interfaces[typeid(_Ty).hash_code()];
+
 			if (*DC == nullptr)
-			{
-				Shader = (_Ty*)*DC;
-			}
+				return nullptr;
+
 			// 만약 _Ty의 hash 값에 해당하는 멤버가 _Ty에 해당하는 인터페이스로
 			// Query가 불가능하다면 함수는 nullptr를 반환합니다.
-			else
-			{
-				if (FAILED(DC[0]->QueryInterface<_Ty>(&Shader)))
-					return nullptr;
-
-			}
+			if (FAILED(DC[0]->QueryInterface<_Ty>(&Shader)))
+				return nullptr;
 
 			return Shader;
 			
 		}
 
-		
+		template<typename _Ty>
+		inline _Ty** RequestAddressOfInterface() // 2차원 포인터로 수정 (Out-Parameter)
+		{
+			_Ty** Shader = (_Ty**)Interfaces[typeid(_Ty).hash_code()];
+			return Shader;
+		}
+
+
+
 		D3DAMaterial()
 		{
 

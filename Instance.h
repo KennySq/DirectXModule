@@ -4,7 +4,7 @@ using namespace D3DRS;
 using namespace std;
 
 class Scene;
-
+class RenderManager;
 class Instance : public IRenderer
 {
 private:
@@ -19,14 +19,27 @@ private:
 
 	shared_ptr<D3DARS::D3DATransform> InstTransform;
 	
+
 public:
 
 	explicit Instance();
 	virtual ~Instance();
 	void SetMesh(shared_ptr<D3DAModel> pModel) override;
-	void DrawMesh() override;
+	void DrawMesh(RenderManager* Renderer) override;
 	void AddMaterial(shared_ptr<D3DAMaterial> Material) override;
 
+	// Alpha Code //
+	void SelectRenderTarget(ID3D11RenderTargetView** RTVs, UINT Count, ID3D11DepthStencilView* DSV)
+	{
+		static auto Context = GetAwaitingContext();
+		Context->OMSetRenderTargets(Count, RTVs, DSV);
+	}
+	void SelectViewport(D3D11_VIEWPORT& Viewport)
+	{
+		static auto Context = GetAwaitingContext();
+		Context->RSSetViewports(1, &Viewport);
+	}
+	/////////////////////
 	inline void SetName(const char* NewName) { Name = NewName; }
 
 	inline void SetScene(shared_ptr<Scene> NewScene) {
@@ -47,4 +60,6 @@ public:
 
 	inline D3DARS::D3DATransform* GetTransform() { return InstTransform.get(); }
 	
+	void SetRasterizerState(RenderManager* Renderer, UINT Index);
+
 };
