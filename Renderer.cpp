@@ -20,6 +20,16 @@ void RenderManager::ClearDepthStencil(shared_ptr<D3DDepthStencilTexture> DepthSt
 	static auto Context = GetAwaitingContext();
 	
 	Context->ClearDepthStencilView(*DepthStencil->GetResource(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+	FlushCommand(Context);
+}
+
+void RenderManager::SelectRenderTarget(ID3D11RenderTargetView** RTVs, UINT Count, ID3D11DepthStencilView* DSV)
+{
+	auto Context = GetContext();
+
+	Context->OMSetRenderTargets(Count, RTVs, DSV);
+
 }
 
 RenderManager::RenderManager()
@@ -80,31 +90,50 @@ HRESULT RenderManager::GetSwapChainDepthBuffer(shared_ptr<D3DDepthStencilTexture
 	return S_OK;
 }
 
+void RenderManager::CreateRasterizerState(D3D11_CULL_MODE CullMode, D3D11_FILL_MODE FillMode, bool Clockwise)
+{
+	auto Device = D3DHW::GetDevice();
+	
+	D3D11_RASTERIZER_DESC RasterDesc = CD3D11_RASTERIZER_DESC();
+	RasterDesc.CullMode = CullMode;
+	RasterDesc.FillMode = FillMode;
+	RasterDesc.FrontCounterClockwise = Clockwise;
+
+	ComPtr<ID3D11RasterizerState> State;
+
+	auto Result = Device->CreateRasterizerState(&RasterDesc, State.GetAddressOf());
+	if (State.Get() == nullptr)
+		debug_logger("The ID3D11RasterzerState didn't initialized!");
+
+	RasterizerStates.emplace_back(State);
+}
+
+
 // 인자로 전달받는 Deferred-Context에 예약된 명령들을 전부 Flush 하여 명령목록에 기록합니다.
 void RenderManager::FlushCommand(ID3D11DeviceContext* Context)
 {
 	HRESULT Result;
-	auto Cmds = Device->GetDeferredCommandLists();
-	auto Index = D3DHWDevice::GetCurrentContext();
-
+	auto Cmd = GetCommandListByContext(Context);
+	
 	if (D3DHWDevice::GetCurrentContext() >= MAXCONTEXTS)
 		D3DHWDevice::SetCurrentContext(0);
 	else
 		D3DHWDevice::AddCurrentContext();
 
-	Result = Context->FinishCommandList(false, Cmds[Index].GetAddressOf());
+	Result = Context->FinishCommandList(false, Cmd);
 }
 
 // 대기중인 모든 ID3D11CommandList 들의 명령을 Immediate-Context로 전달하여 한 번에 실행시킵니다.
 void RenderManager::Execute()
 {
 	static ID3D11DeviceContext* Context = GetContext();
-	ComPtr<ID3D11CommandList>* Cmds = Device->GetDeferredCommandLists();
+	static auto Map = Device->GetContextCommandMap();
 
-
-	for (int i = 0; i < D3DHWDevice::GetCurrentContext(); i++)
+	for (auto RI = Map.begin(); RI != Map.end();RI++)
 	{
-		Context->ExecuteCommandList(Cmds[i].Get(), false);
+		if(RI->second != nullptr)
+			Context->ExecuteCommandList(RI->second.Get(), TRUE);
+		
 	}
 }
 // *위와 같은 구조를 이용하여 불필요한 DrawCall을 최소화합니다.

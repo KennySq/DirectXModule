@@ -17,8 +17,9 @@ namespace D3DARS
 		ComPtr<ID3D11Buffer> CameraBuffer;
 		float FOV;
 	public:
-		inline XMMATRIX GetView() { return XMLoadFloat4x4(&ViewProject.View); }
-		inline XMMATRIX GetProjection() { return XMLoadFloat4x4(&ViewProject.Projection); }
+		inline XMMATRIX GetView() { return XMMatrixTranspose(XMLoadFloat4x4(&ViewProject.View)); }
+		inline XMMATRIX GetProjection() { return XMMatrixTranspose(XMLoadFloat4x4(&ViewProject.Projection)); }
+		inline ComPtr<ID3D11Buffer> GetBuffer() { return CameraBuffer; }
 
 		D3DACamera();
 		D3DACamera(XMVECTOR Position, XMVECTOR Rotation, float FOV, float Near, float Far);
@@ -33,4 +34,3 @@ namespace D3DARS
 
 
 }
-

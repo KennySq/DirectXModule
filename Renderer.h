@@ -23,6 +23,8 @@ private:
 	std::vector<D3D11_VIEWPORT> RenderViewports;
 	shared_ptr<D3DHWDevice> Device;
 
+	std::vector<ComPtr<ID3D11RasterizerState>> RasterizerStates;
+
 public:
 
 private:
@@ -36,6 +38,8 @@ public:
 
 	HRESULT GetSwapChainBuffer(UINT Index, shared_ptr<D3DRenderableTexture>& pOutTexture);
 	HRESULT GetSwapChainDepthBuffer(shared_ptr<D3DDepthStencilTexture>& pOutTexture);
+	
+	ID3D11RasterizerState* GetRasterizerState(UINT Index) { if (RasterizerStates.size() < Index || Index < 0) return nullptr; return RasterizerStates[Index].Get(); }
 
 	shared_ptr<D3DRenderableTexture> GetGBuffer(UINT Index) { return GBuffers[Index]; }
 	shared_ptr<D3DDepthStencilTexture> GetSwapChainDepthStencil() { return SwapChainDepth; }
@@ -46,7 +50,9 @@ public:
 	void ClearTexture2D(shared_ptr<D3DRenderableTexture> Texture, XMVECTORF32 Color = Colors::Black);
 	void ClearDepthStencil(shared_ptr<D3DDepthStencilTexture> DepthStencil);
 
+	void SelectRenderTarget(ID3D11RenderTargetView** RTVs, UINT Count, ID3D11DepthStencilView* DSV = nullptr);
 
+	void CreateRasterizerState(D3D11_CULL_MODE CullMode, D3D11_FILL_MODE FillMode, bool Clockwise );
 
 	void FlushCommand(ID3D11DeviceContext* Context);
 

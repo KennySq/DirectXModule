@@ -258,13 +258,13 @@ HRESULT ReflectShader(ID3DBlob* VBlob, ID3D11InputLayout** pOutInputLayout, ID3D
 
 HRESULT CompilePass(const char* Path, const char* Pass, int Flag, shared_ptr<D3DAMaterial> Material)
 {
-	auto VS = Material->RequestInterface<ID3D11VertexShader>().GetAddressOf();
-	auto PS = Material->RequestInterface<ID3D11PixelShader>().GetAddressOf();
-	auto GS = Material->RequestInterface<ID3D11GeometryShader>().GetAddressOf();
-	auto CS = Material->RequestInterface<ID3D11ComputeShader>().GetAddressOf();
-	auto HS = Material->RequestInterface<ID3D11HullShader>().GetAddressOf();
-	auto DS = Material->RequestInterface<ID3D11DomainShader>().GetAddressOf();
-	auto IL = Material->RequestInterface<ID3D11InputLayout>().GetAddressOf();
+	auto VS = Material->RequestAddressOfInterface<ID3D11VertexShader>();
+	auto PS = Material->RequestAddressOfInterface<ID3D11PixelShader>();
+	auto GS = Material->RequestAddressOfInterface<ID3D11GeometryShader>();
+	auto CS = Material->RequestAddressOfInterface<ID3D11ComputeShader>();
+	auto HS = Material->RequestAddressOfInterface<ID3D11HullShader>();
+	auto DS = Material->RequestAddressOfInterface<ID3D11DomainShader>();
+	auto IL = Material->RequestAddressOfInterface<ID3D11InputLayout>();
 
 	string PassName = Pass;
 
