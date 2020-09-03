@@ -63,7 +63,7 @@ void Instance::DrawMesh(RenderManager* Renderer)
 
 	Context->VSSetShader(VS, nullptr, 0);
 	Context->PSSetShader(PS, nullptr, 0);
-	//Context->VSSetConstantBuffers(0, 1, Camera->GetBuffer().GetAddressOf());
+	Context->UpdateSubresource(InstTransform->GetBuffer().Get(), 0, nullptr, &InstTransform->GetMatrix(), 0, 0);
 	Context->VSSetConstantBuffers(0, 2, BasicBuffers);
 	Context->DrawIndexed(IndexCount, 0, 0);
 	

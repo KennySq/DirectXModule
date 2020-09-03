@@ -3,6 +3,10 @@
 
 using namespace std;
 
+// Triangles => 1,884
+//  Vertices => 3,008
+
+
 shared_ptr<D3DAModel> FBXLoader::Load(string Path)
 {
 	FbxManager* Manager = FbxManager::Create();
@@ -17,6 +21,8 @@ shared_ptr<D3DAModel> FBXLoader::Load(string Path)
 		debug_logger(Importer->GetStatus().GetErrorString());
 		MessageBoxA(nullptr, "Failed to import .fbx file", 0, 0);
 	}
+	TemporalMesh = make_shared<D3DAMesh<D3DVERTEX::StandardVertex>>(
+		D3DAMesh<D3DVERTEX::StandardVertex>());
 
 	Model = make_shared<D3DAModel>(	);
 
@@ -24,12 +30,21 @@ shared_ptr<D3DAModel> FBXLoader::Load(string Path)
 	
 	Scene = FbxScene::Create(Manager, "Scene");
 	Importer->Import(Scene);
+	FbxGeometryConverter GeoConvert(Manager);
+
+	bool TriResult = GeoConvert.Triangulate(Scene, true);
 
 	Importer->Destroy();
 
 	FbxNode* Root = Scene->GetRootNode();
 	LoadNode(Root);
 	
+	auto Buffer = D3DRSBuffer::CreateConstantMeshBuffer
+		<D3DVERTEX::StandardVertex>(TemporalMesh);
+
+	Model->Meshes.emplace_back(Buffer);
+
+
 	IOSetting->Destroy();
 	Manager->Destroy();
 
@@ -47,8 +62,6 @@ void FBXLoader::LoadNode(FbxNode* Node)
 	XMFLOAT2 UV;
 	
 	
-	TemporalMesh = make_shared<D3DAMesh<D3DVERTEX::StandardVertex>>(
-			D3DAMesh<D3DVERTEX::StandardVertex>() );
 	
 	if (NodeAtt)
 	{
@@ -56,17 +69,20 @@ void FBXLoader::LoadNode(FbxNode* Node)
 		{
 			FbxMesh* Mesh = Node->GetMesh();
 			GetVertex(Mesh);
-		
-			unsigned int TriCount = Mesh->GetPolygonCount();
+			
+			auto TriVertices = Mesh->GetPolygonVertices();
+			auto TriCount = Mesh->GetPolygonCount();
 			unsigned int VertexCount = 0;
-
+			auto IsTri = Mesh->IsTriangleMesh();
+			
 			for (unsigned int i = 0; i < TriCount; ++i)
 			{
 				int PolyVertCount = Mesh->GetPolygonSize(i);
-				for (unsigned int j = 0; j < 3; ++j)
+				int PolyIndex = Mesh->GetPolygonVertexIndex(i);
+				for (unsigned int j = 0; j < PolyVertCount; ++j)
 				{
 					int CPI = Mesh->GetPolygonVertex(i, j);
-						
+
 					XMFLOAT4& Position = Positions[CPI];
 					XMFLOAT3 Normal = ReadNormal(Mesh, CPI, VertexCount);
 					
@@ -75,7 +91,7 @@ void FBXLoader::LoadNode(FbxNode* Node)
 					Vertex.Normal = Normal;
 
 					TemporalMesh->Vertices.push_back(Vertex);
-					TemporalMesh->Indices.push_back(VertexCount);
+					TemporalMesh->Indices.push_back(PolyIndex + j);
 
 					VertexCount++;
 				}
@@ -83,11 +99,7 @@ void FBXLoader::LoadNode(FbxNode* Node)
 		
 		}
 
-		auto Buffer = D3DRSBuffer::CreateConstantMeshBuffer
-			<D3DVERTEX::StandardVertex>(TemporalMesh);
-		
-		Model->Meshes.emplace_back(Buffer);
-		
+
 		MeshCounter++;
 	}
 

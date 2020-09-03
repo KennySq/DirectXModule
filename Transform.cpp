@@ -23,6 +23,28 @@ void D3DARS::D3DATransform::MakeTransform()
 	
 }
 
+void D3DARS::D3DATransform::Rotate(float Pitch, float Yaw, float Roll)
+{
+	auto Rot = XMMatrixRotationRollPitchYaw(Pitch, Yaw, Roll);
+	auto Ori = XMLoadFloat4x4(&World);
+
+	Ori *= Rot;
+
+	XMStoreFloat4x4(&World, Ori);
+
+}
+
+void D3DARS::D3DATransform::Translate(float x, float y, float z)
+{
+	auto Rot = XMMatrixTranslation(x, y, z);
+	auto Ori = XMLoadFloat4x4(&World);
+
+	Ori *= Rot;
+
+	XMStoreFloat4x4(&World, XMMatrixTranspose(Ori));
+
+}
+
 D3DATransform::D3DATransform()
 {}
 

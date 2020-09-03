@@ -2,6 +2,7 @@
 
 using namespace std;
 using namespace Microsoft;
+using namespace WRL;
 #define MAXCONTEXTS 8 // 최대 컨텍스트 수를 관리합니다.
 
 // 하드웨어 자원은 모두 D3DHW 네임스페이스에서 관리됩니다.
@@ -15,6 +16,8 @@ namespace D3DHW
 		WRL::ComPtr<ID3D11DeviceContext>* DeferredContextInstances;
 		WRL::ComPtr<ID3D11CommandList>* DeferredCommandLists;
 		WRL::ComPtr<IDXGISwapChain> SwapChainInstance;
+
+		std::map<ComPtr<ID3D11DeviceContext>, ComPtr<ID3D11CommandList>> ContextCommandMap;
 
 		static shared_ptr<D3DHWDevice> pDevice;
 		int CurrentContext = 0;
@@ -63,8 +66,11 @@ namespace D3DHW
 			{
 				DeviceInstance->CreateDeferredContext(0, DeferredContextInstances[i].GetAddressOf());
 				device_assert(DeferredContextInstances[i].Get());
+			
+				ContextCommandMap.insert_or_assign(DeferredContextInstances[i], DeferredCommandLists[i]);
 			}
 		
+			//std::reverse(ContextCommandMap.begin(), ContextCommandMap.end());
 		};
 
 	public: // 전역 함수
@@ -82,7 +88,9 @@ namespace D3DHW
 		_inline static auto GetDeferredContexts() { return GetHWDevice()->DeferredContextInstances->GetAddressOf(); }
 		_inline static auto GetDeferredCommandLists() { return GetHWDevice()->DeferredCommandLists; }
 
+		inline static auto& GetContextCommandMap() { return GetHWDevice()->ContextCommandMap; }
 		_inline static int GetCurrentContext() { return GetHWDevice()->CurrentContext; }
+		
 		_inline static void AddCurrentContext() { GetHWDevice()->CurrentContext++; }
 		_inline static void SetCurrentContext(int i) { GetHWDevice()->CurrentContext = i; }
 		
@@ -102,4 +110,6 @@ namespace D3DHW
 		return D3DHWDevice::GetDeferredContexts()[D3DHWDevice::GetCurrentContext()];
 
 	}
+
+	inline auto GetCommandListByContext(ID3D11DeviceContext* Context) { return &D3DHWDevice::GetContextCommandMap()[Context]; }
 }
