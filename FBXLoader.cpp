@@ -3,10 +3,6 @@
 
 using namespace std;
 
-// Triangles => 1,884
-//  Vertices => 3,008
-
-
 shared_ptr<D3DAModel> FBXLoader::Load(string Path)
 {
 	FbxManager* Manager = FbxManager::Create();
@@ -84,7 +80,7 @@ void FBXLoader::LoadNode(FbxNode* Node)
 					int CPI = Mesh->GetPolygonVertex(i, j);
 
 					XMFLOAT4& Position = Positions[CPI];
-					XMFLOAT3 Normal = ReadNormal(Mesh, CPI, VertexCount);
+					XMFLOAT3 Normal = ReadNormal(Mesh, CPI, VertexCount, i, j);
 					
 					Vertex.Position = Position;
 					Vertex.Position.w = 1.0f;
@@ -137,7 +133,7 @@ void FBXLoader::GetVertex(FbxMesh* Mesh)
 }
 
 
-XMFLOAT3 FBXLoader::ReadNormal(FbxMesh* Mesh, int CPI, int VertexCount)
+XMFLOAT3 FBXLoader::ReadNormal(FbxMesh* Mesh, int CPI, int VertexCount, int PolyIndex, int PolyVertex)
 {
 	if (Mesh->GetElementNormalCount() < 1)
 	{
@@ -145,7 +141,9 @@ XMFLOAT3 FBXLoader::ReadNormal(FbxMesh* Mesh, int CPI, int VertexCount)
 	}
 
 	FbxGeometryElementNormal* VertexNormal = Mesh->GetElementNormal();
-	XMFLOAT3 Normal;
+	FbxVector4 RetNormal;
+	bool Result = Mesh->GetPolygonVertexNormal(PolyIndex, PolyVertex, RetNormal);
+	XMFLOAT3 Normal{};
 
 	switch (VertexNormal->GetMappingMode())
 	{
@@ -168,13 +166,9 @@ XMFLOAT3 FBXLoader::ReadNormal(FbxMesh* Mesh, int CPI, int VertexCount)
 					Normal.z = static_cast<float>(VertexNormal->GetDirectArray().GetAt(Index).mData[2]);
 					TemporalMesh->Indices.push_back(Index);
 				} break;
-
-
-
-				
-
 			}
-			break;
+		}
+		break;
 		case FbxGeometryElement::eByPolygonVertex:
 		{
 			switch (VertexNormal->GetReferenceMode())
@@ -198,10 +192,11 @@ XMFLOAT3 FBXLoader::ReadNormal(FbxMesh* Mesh, int CPI, int VertexCount)
 			}
 		}
 			break;
-		}
-	
 	}
 
-
+	//Normal.x = max(max(-1.0f, Normal.x), min(1.0f, Normal.x));
+	//Normal.y = max(max(-1.0f, Normal.y), min(1.0f, Normal.y));
+	//Normal.z = max(max(-1.0f, Normal.z), min(1.0f, Normal.z));
+	
 	return Normal;
 }

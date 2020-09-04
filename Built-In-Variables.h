@@ -22,5 +22,5 @@ static unsigned int BIWidth = 1280;
 static unsigned int BIHeight = 720;
 static float BIAspectRatio = (float)BIWidth / (float)BIHeight;
 
-static HINSTANCE BIAppHandleInst;
-static HWND BIAppWindowHandle;
+extern HINSTANCE BIAppHandleInst;
+extern HWND BIAppWindowHandle;

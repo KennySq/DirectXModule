@@ -2,6 +2,8 @@
 #include "Instance.h"
 
 
+HINSTANCE BIAppHandleInst = { nullptr };
+HWND BIAppWindowHandle = { nullptr };
 
 Instance::Instance()
 {}

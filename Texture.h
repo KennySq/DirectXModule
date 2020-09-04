@@ -199,7 +199,7 @@ namespace D3DRS
 		HRESULT MakeSwapChainBuffer(DXGI_FORMAT Format, UINT Width, UINT Height, UINT Index);
 
 
-		auto GetResource() { return &RTV; }
+		auto GetResource() { return RTV.GetAddressOf(); }
 	};
 
 	class D3DDepthStencilTexture : public D3DTexture2D
@@ -207,7 +207,7 @@ namespace D3DRS
 	protected:
 		WRL::ComPtr<ID3D11DepthStencilView> DSV = nullptr;
 	public:
-		auto GetResource() { return &DSV; };
+		auto GetResource() { return DSV.GetAddressOf(); };
 
 	};
 
@@ -216,7 +216,7 @@ namespace D3DRS
 	protected:
 		WRL::ComPtr<ID3D11UnorderedAccessView> UAV = nullptr;
 	public:
-		auto GetResource() { return &UAV; };
+		auto GetResource() { return UAV.GetAddressOf(); };
 	};
 
 

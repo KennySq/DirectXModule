@@ -21,6 +21,6 @@ public:
 	void LoadNode(FbxNode* Node);
 	void GetVertex(FbxMesh* Mesh);
 
-	XMFLOAT3 ReadNormal(FbxMesh* Mesh, int CPI, int VertexCount);
+	XMFLOAT3 ReadNormal(FbxMesh* Mesh, int CPI, int VertexCount, int PolyIndex, int PolyVertex);
 };
 
