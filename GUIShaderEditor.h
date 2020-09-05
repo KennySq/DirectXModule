@@ -2,11 +2,13 @@
 using namespace std;
 class GUIShaderEditor
 {
-	std::string Path;
-	ImVector<char> Buffer;
 
-	std::ifstream OpenStream;
-	std::ofstream SaveStream;
+	shared_ptr<D3DAMaterial> Shader;
+	
+	std::string Path;
+	std::string Buffer;
+
+	std::fstream Stream;
 public:
 
 	void Editor();

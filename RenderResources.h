@@ -67,7 +67,7 @@ namespace D3DARS
 	public:
 		// 각 인터페이스를 은닉함과 동시에 템플릿을 이용하여 접근성을 높입니다.
 		template<typename _Ty>
-		inline _Ty* RequestInterface() // 2차원 포인터로 수정 (Out-Parameter)
+		inline _Ty* RequestInterface()
 		{
 			_Ty* Shader;
 
