@@ -64,7 +64,11 @@ namespace D3DARS
 
 		WRL::ComPtr<ID3D11InputLayout> IL;
 
+		int PassType;
+
 	public:
+		inline constexpr int GetPassType() { return PassType; }
+
 		// 각 인터페이스를 은닉함과 동시에 템플릿을 이용하여 접근성을 높입니다.
 		template<typename _Ty>
 		inline _Ty* RequestInterface()

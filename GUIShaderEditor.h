@@ -3,10 +3,12 @@ using namespace std;
 class GUIShaderEditor
 {
 
-	shared_ptr<D3DAMaterial> Shader;
+	shared_ptr<D3DAMaterial>* Shader;
 	
 	std::string Path;
 	std::string Buffer;
+
+	
 
 	std::fstream Stream;
 public:

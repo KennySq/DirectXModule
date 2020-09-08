@@ -98,7 +98,7 @@ void GUIShaderEditor::Save()
 HRESULT GUIShaderEditor::Compile()
 {
 	
-	CompilePass(Path.c_str(), )
+	CompilePass(Path.c_str(), Path.c_str(), Shader[0]->GetPassType(), *Shader);
 	
 	
 	return S_OK;
