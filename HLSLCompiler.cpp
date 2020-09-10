@@ -269,22 +269,41 @@ HRESULT CompilePass(const char* Path, const char* Pass, int Flag, shared_ptr<D3D
 	string PassName = Pass;
 
 	if(Flag & PASSTYPE::VER)
+	{
 		CompileVertexShader(Path, (PassName + "VS").c_str(), VS, IL);
+		Material->AddPassType(PASSTYPE::VER);
+	}
 
 	if(Flag & PASSTYPE::PIX)
+	{
 		CompilePixelShader(Path, (PassName + "PS").c_str(), PS);
+		Material->AddPassType(PASSTYPE::PIX);
+	}
+	
 	
 	if(Flag & PASSTYPE::GEO)
+	{
 		CompileGeometryShader(Path, (PassName + "GS").c_str(), GS);
+		Material->AddPassType(PASSTYPE::GEO);
+	}
 
 	if (Flag & PASSTYPE::COM)
+	{
 		CompileComputeShader(Path, (PassName + "CS").c_str(), CS);
+		Material->AddPassType(PASSTYPE::COM);
+	}
 
 	if (Flag & PASSTYPE::HUL)
+	{
 		CompileHullShader(Path, (PassName + "HS").c_str(), HS);
+		Material->AddPassType(PASSTYPE::HUL);
+	}
 
 	if (Flag & PASSTYPE::DOM)
+	{
 		CompileDomainShader(Path, (PassName + "DS").c_str(), DS);
+		Material->AddPassType(PASSTYPE::DOM);
+	}
 
 	return S_OK;
 }

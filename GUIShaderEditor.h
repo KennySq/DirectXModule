@@ -1,10 +1,12 @@
 #pragma once
 using namespace std;
+using namespace D3DARS;
+
 class GUIShaderEditor
 {
 
-	shared_ptr<D3DAMaterial>* Shader;
-	
+	shared_ptr<D3DARS::D3DAMaterial> Shader;
+
 	std::string Path;
 	std::string Buffer;
 

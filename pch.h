@@ -16,6 +16,7 @@
 #include "framework.h"
 
 // STL Headers
+
 #include<functional>
 #include<iostream>
 #include<map>
@@ -47,7 +48,6 @@
 #include"imgui\imgui.h"
 #include"imgui\misc\cpp\imgui_stdlib.h"
 
-#include"GUIShaderEditor.h"
 
 #include"Built-In-Variables.h"
 #include"ModuleDebugger.h"
@@ -58,13 +58,12 @@
 #include"Texture.h"
 
 #include"RenderResources.h"
+#include"HLSLCompiler.h"
 
 #include"FBXLoader.h"
 
 #include"Camera.h"
 #include"D3DRSBuffer.h"
-
-#include"HLSLCompiler.h"
 
 #include"IRenderer.h"
 
@@ -76,3 +75,4 @@
 
 #include"Renderer.h"
 
+#include"GUIShaderEditor.h"

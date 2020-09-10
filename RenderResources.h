@@ -2,6 +2,8 @@
 using namespace DirectX;
 using namespace WRL;
 // Direct 3D App Resouce namespace
+enum PASSTYPE;
+
 namespace D3DARS
 {
 	namespace D3DVERTEX
@@ -52,7 +54,7 @@ namespace D3DARS
 	{
 	private:
 
-		// ¾÷Ä³½ºÆÃµÈ ¾Æ·¡ ½¦ÀÌ´õ ÀÎÅÍÆäÀÌ½º ¸â¹öµéÀ» º¸°üÇÕ´Ï´Ù.
+		// ï¿½ï¿½Ä³ï¿½ï¿½ï¿½Ãµï¿½ ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
 		std::map<size_t, IUnknown**> Interfaces;
 
 		WRL::ComPtr<ID3D11VertexShader> VS;
@@ -65,28 +67,30 @@ namespace D3DARS
 		WRL::ComPtr<ID3D11InputLayout> IL;
 
 		int PassType;
-
+		
 	public:
-		inline constexpr int GetPassType() { return PassType; }
 
-		// °¢ ÀÎÅÍÆäÀÌ½º¸¦ Àº´ÐÇÔ°ú µ¿½Ã¿¡ ÅÛÇÃ¸´À» ÀÌ¿ëÇÏ¿© Á¢±Ù¼ºÀ» ³ôÀÔ´Ï´Ù.
+		int GetPassType() { return PassType; }
+		void AddPassType(PASSTYPE Flag) { PassType |= Flag; }
+		
+		// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ô°ï¿½ ï¿½ï¿½ï¿½Ã¿ï¿½ ï¿½ï¿½ï¿½Ã¸ï¿½ï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½Ù¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ô´Ï´ï¿½.
 		template<typename _Ty>
 		inline _Ty* RequestInterface()
 		{
 			_Ty* Shader;
 
-			// ½¦ÀÌ´õ ÀÎÅÍÆäÀÌ½ºµéÀÌ °øÅëÀûÀ¸·Î »ó¼Ó¹Þ´Â IUnknownÀÇ ÇüÅÂ·Î
-			// ¾÷Ä³½ºÆÃµÇ¾î Interfaces¶ó´Â ÇÏ³ªÀÇ ÄÁÅ×ÀÌ³Ê¿¡ º¸°üµË´Ï´Ù.
+			// ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ó¹Þ´ï¿½ IUnknownï¿½ï¿½ ï¿½ï¿½ï¿½Â·ï¿½
+			// ï¿½ï¿½Ä³ï¿½ï¿½ï¿½ÃµÇ¾ï¿½ Interfacesï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì³Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ë´Ï´ï¿½.
 
-			// º¸°ü¿¡ »ç¿ëÇÏ´Â Å°´Â ºü¸¥ Á¢±ÙÀ» À§ÇØ ¹®ÀÚ°¡ ¾Æ´Ñ
-			// typeid·Î ¾Ë¾Æ³½ ÀÚ·áÇüÀÇ hash °ªÀ» »ç¿ëÇÕ´Ï´Ù.
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½Æ´ï¿½
+			// typeidï¿½ï¿½ ï¿½Ë¾Æ³ï¿½ ï¿½Ú·ï¿½ï¿½ï¿½ï¿½ï¿½ hash ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
 			auto DC = Interfaces[typeid(_Ty).hash_code()];
 
 			if (*DC == nullptr)
 				return nullptr;
 
-			// ¸¸¾à _TyÀÇ hash °ª¿¡ ÇØ´çÇÏ´Â ¸â¹ö°¡ _Ty¿¡ ÇØ´çÇÏ´Â ÀÎÅÍÆäÀÌ½º·Î
-			// Query°¡ ºÒ°¡´ÉÇÏ´Ù¸é ÇÔ¼ö´Â nullptr¸¦ ¹ÝÈ¯ÇÕ´Ï´Ù.
+			// ï¿½ï¿½ï¿½ï¿½ _Tyï¿½ï¿½ hash ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ _Tyï¿½ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½
+			// Queryï¿½ï¿½ ï¿½Ò°ï¿½ï¿½ï¿½ï¿½Ï´Ù¸ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ nullptrï¿½ï¿½ ï¿½ï¿½È¯ï¿½Õ´Ï´ï¿½.
 			if (FAILED(DC[0]->QueryInterface<_Ty>(&Shader)))
 				return nullptr;
 
@@ -95,7 +99,7 @@ namespace D3DARS
 		}
 
 		template<typename _Ty>
-		inline _Ty** RequestAddressOfInterface() // 2Â÷¿ø Æ÷ÀÎÅÍ·Î ¼öÁ¤ (Out-Parameter)
+		inline _Ty** RequestAddressOfInterface() // 2ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½ ï¿½ï¿½ï¿½ï¿½ (Out-Parameter)
 		{
 			_Ty** Shader = (_Ty**)Interfaces[typeid(_Ty).hash_code()];
 			return Shader;
@@ -107,7 +111,7 @@ namespace D3DARS
 		{
 
 
-			// ÀÌ ¹æ¹ýÀº ¾ÆÁ÷±îÁö´Â ¼öÀÛ¾÷À¸·Î type¿¡ °üÇÑ Á¤º¸¸¦ Àü´Þ ¹Þ¾Æ¾ß ÇÕ´Ï´Ù.
+			// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Û¾ï¿½ï¿½ï¿½ï¿½ï¿½ typeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¾Æ¾ï¿½ ï¿½Õ´Ï´ï¿½.
 			Interfaces.insert_or_assign(typeid(ID3D11VertexShader).hash_code(), (IUnknown**)VS.GetAddressOf());
 			Interfaces.insert_or_assign(typeid(ID3D11PixelShader).hash_code(), (IUnknown**)PS.GetAddressOf());
 			Interfaces.insert_or_assign(typeid(ID3D11ComputeShader).hash_code(), (IUnknown**)CS.GetAddressOf());
@@ -121,11 +125,11 @@ namespace D3DARS
 
 		}
 
-		// ÁöÁ¤µÈ _Ty ÇüÅÂ·Î ÀÎÅÍÆäÀÌ½º¸¦ ÃÊ±âÈ­ÇÕ´Ï´Ù.
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ _Ty ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­ï¿½Õ´Ï´ï¿½.
 		template<typename _Ty>
 		inline void SetInterface(WRL::ComPtr<_Ty> Inter)
 		{
-			// ¸¸¾à ÇØ´ç ÀÎÅÍÆäÀÌ½º¸¦ Æ÷ÇÔÇÏÁö ¾Ê´Â°æ¿ì ¿¹¿Ü·Î °£ÁÖÇØ ·Î±×¸¦ ³²±â°í ÇÔ¼ö¸¦ Á¾·áÇÕ´Ï´Ù
+			// ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â°ï¿½ï¿½ ï¿½ï¿½ï¿½Ü·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±×¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½
 			if (Interfaces.find(typeid(_Ty).hash_code()) == nullptr)
 			{
 				debug_logger("There is no such interface in this material.");
