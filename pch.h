@@ -55,6 +55,7 @@
 #include"VirtualObject.h"
 
 #include"Device.h"
+
 #include"Texture.h"
 
 #include"RenderResources.h"
@@ -70,7 +71,6 @@
 #include"Transform.h"
 
 #include"Instance.h"
-
 #include"Scene.h"
 
 #include"Renderer.h"

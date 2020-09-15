@@ -48,7 +48,7 @@ void GUIShaderEditor::Editor()
 	
 }
 
-HRESULT GUIShaderEditor::Open(string FilePath)
+HRESULT GUIShaderEditor::Open(string FilePath, shared_ptr<D3DAMaterial> LinkMaterial)
 {
 
 	if (Stream.is_open())
@@ -59,7 +59,7 @@ HRESULT GUIShaderEditor::Open(string FilePath)
 	Path = FilePath;
 
 	Stream.open(Path);
-
+	
 	if (Stream.is_open())
 	{
 		while (!Stream.eof())
@@ -72,6 +72,8 @@ HRESULT GUIShaderEditor::Open(string FilePath)
 	}
 
 	Stream.close();
+
+	Shader = LinkMaterial;
 
 	std::ofstream ClearStream;
 	ClearStream.open(FilePath, ios::trunc);
@@ -97,7 +99,9 @@ void GUIShaderEditor::Save()
 
 HRESULT GUIShaderEditor::Compile()
 {
-	
+
+	auto PassIndex = Path.find_first_of('.', 1);
+	auto Pass = Path.substr(PassIndex);
 	auto Result = CompilePass(Path.c_str(), Path.c_str(), Shader->GetPassType(), Shader);
 
 	
@@ -112,5 +116,6 @@ GUIShaderEditor::GUIShaderEditor()
 GUIShaderEditor::~GUIShaderEditor()
 {
 	Close();
-	
+	Save();
+	Close();
 }

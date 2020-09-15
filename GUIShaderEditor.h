@@ -16,7 +16,7 @@ class GUIShaderEditor
 public:
 
 	void Editor();
-	HRESULT Open(string Path);
+	HRESULT Open(string Path, shared_ptr<D3DAMaterial> LinkMaterial);
 	void Close();
 
 	void Save();

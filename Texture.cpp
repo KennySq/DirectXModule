@@ -19,7 +19,7 @@ HRESULT D3DRS::D3DTexture2D::MakeD3D11Texture2D(DXGI_FORMAT Format, UINT Width, 
 	TexDesc.SampleDesc.Quality = 0;
 	TexDesc.CPUAccessFlags = 0;
 	TexDesc.BindFlags = BindFlag;
-		
+
 	Result = Device->CreateTexture2D(&TexDesc, nullptr, RawTexture.GetAddressOf());
 	resource_assert(RawTexture.Get());
 
