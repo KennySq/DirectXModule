@@ -16,7 +16,6 @@ HRESULT CompileVertexShader(const char* Path, const char* Entry, ID3D11VertexSha
 
 	auto Device = GetDevice();
 
-
 	Result = D3DCompileFromFile(A2W(Path), nullptr, nullptr, Entry, "vs_5_0", 0, CompileFlag, &VBlob, &ErrBlob);
 	assert(Result == S_OK);
 
@@ -75,7 +74,7 @@ HRESULT CompilePixelShader(const char* Path, const char* Entry, ID3D11PixelShade
 	return S_OK;
 }
 
-// *** Caution! *** (This code is in WIP)
+// *** Caution! *** (WIP Code)
 HRESULT CompileGeometryShader(const char* Path, const char* Entry, ID3D11GeometryShader** OutGS)
 {
 	USES_CONVERSION;

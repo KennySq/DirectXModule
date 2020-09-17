@@ -37,6 +37,7 @@ void GUIShaderEditor::Editor()
 	
 	if(ImGui::Button("Save and Compile"))
 	{
+        Save();
 		Compile();
 	}
 	ImGui::SameLine();
@@ -75,12 +76,6 @@ HRESULT GUIShaderEditor::Open(string FilePath, shared_ptr<D3DAMaterial> LinkMate
 
 	Shader = LinkMaterial;
 
-	std::ofstream ClearStream;
-	ClearStream.open(FilePath, ios::trunc);
-	ClearStream.close();
-	
-
-
 	return S_OK;
 }
 
@@ -92,8 +87,12 @@ void GUIShaderEditor::Close()
 
 void GUIShaderEditor::Save()
 {
+	Stream.close();
 	Stream.open(Path);
+  auto Result = Stream.is_open();
+
 	Stream.write(Buffer.c_str(), Buffer.length());
+  Stream.flush();
 	Stream.close();
 }
 
@@ -101,8 +100,9 @@ HRESULT GUIShaderEditor::Compile()
 {
 
 	auto PassIndex = Path.find_first_of('.', 1);
-	auto Pass = Path.substr(PassIndex);
-	auto Result = CompilePass(Path.c_str(), Path.c_str(), Shader->GetPassType(), Shader);
+	auto Pass = Path;
+    Pass.resize(PassIndex);
+	auto Result = CompilePass(Path.c_str(), Pass.c_str(), Shader->GetPassType(), Shader);
 
 	
 	
@@ -110,7 +110,9 @@ HRESULT GUIShaderEditor::Compile()
 }
 
 GUIShaderEditor::GUIShaderEditor()
-{}
+{
+	
+}
 
 
 GUIShaderEditor::~GUIShaderEditor()

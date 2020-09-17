@@ -39,6 +39,8 @@ void Instance::DrawMesh(RenderManager* Renderer)
 	static D3D11_BUFFER_DESC IDesc;
 	static auto Camera = InstanceScene->GetCamera(0);
 	static ID3D11Buffer* BasicBuffers[] = {InstTransform->GetBuffer().Get(), Camera->GetBuffer().Get()};
+	static ID3D11PixelShader* NullPS = nullptr;
+	static ID3D11VertexShader* NullVS = nullptr;
 
 	auto IL = Materials[0]->RequestInterface<ID3D11InputLayout>();
 	auto VS = Materials[0]->RequestInterface<ID3D11VertexShader>();
@@ -52,6 +54,10 @@ void Instance::DrawMesh(RenderManager* Renderer)
 
 	UINT IndexCount = IDesc.ByteWidth / sizeof(MeshIndex);
 	
+
+	Context->VSSetShader(NullVS, nullptr, 0);
+    Context->PSSetShader(NullPS, nullptr, 0);
+
 	Context->IASetVertexBuffers(0, Model->Meshes.size(), VertexBuffers.data(), Strides, Offsets);
 #ifdef _INDEX32
 	Context->IASetIndexBuffer(IndexBuffers[0], DXGI_FORMAT_R32_UINT, 0);

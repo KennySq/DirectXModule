@@ -109,7 +109,7 @@ namespace D3DARS
 
 		D3DAMaterial()
 		{
-
+			PassType = 0;
 
 			// �� ����� ���������� ���۾����� type�� ���� ������ ���� �޾ƾ� �մϴ�.
 			Interfaces.insert_or_assign(typeid(ID3D11VertexShader).hash_code(), (IUnknown**)VS.GetAddressOf());
